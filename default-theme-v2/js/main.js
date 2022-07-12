@@ -1,3 +1,9 @@
+marked.setOptions({
+  highlight: function (code) {
+    return hljs.highlightAuto(code).value;
+  }
+});
+
 currentArticleListPageOrder = 1; //这个变量表示目前在显示文章列表中的第几页，是从1开始数的
 
 if (localStorage.getItem("is_nightmode") === null || localStorage.getItem("is_nightmode") === undefined) {
@@ -14,7 +20,7 @@ function switch_to_night_mode() {
             background-color:#000000c7;
             
           }
-          #blog_index_title,#blog_index_subtitle, .article-content h2,.page-content h2, #article-content-html *, #page-content-html *{
+          #blog_index_title,#blog_index_subtitle, .article-content h2,.page-content h2, #article-content-html p, #page-content-html p{
             color:white;
           }
           .article-item, .article-content, .page-content{
@@ -30,6 +36,24 @@ function switch_to_night_mode() {
             background-color:black;
             color:white
           }
+          
+
+          ul,ol,li,h1,h2 ,h3,h4,h5,h6{
+            color:white
+          }
+
+          pre,
+    code,
+    kbd,
+    samp {
+      border-radius: 4px;
+      background-color: black;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      padding-left: 12px;
+      padding-right: 12px;
+      display: inline-block;
+    }
           `;
   localStorage.setItem("is_nightmode", "on");
 }
@@ -48,7 +72,7 @@ function switch_night_mode() {
 }
 
 function detect_whether_ui_load_finished() {
-  if (bootstrap_css_import_finished === true && content_load_finished === true) {
+  if (highlight_css_import_finished === true && bootstrap_css_import_finished === true && content_load_finished === true) {
     document.getElementById("root").setAttribute("style", "");
     document.getElementById("loading").setAttribute("style", "display:none");
   }
@@ -61,6 +85,7 @@ function copy_full_article_to_clipboard() {
 
 bootstrap_css_import_finished = false;
 content_load_finished = false;
+highlight_css_import_finished = false;
 
 const langdata = {
   "ARCHIVE_AND_TAGS": {
@@ -982,6 +1007,17 @@ function importBootstrapCSSFile(uri) {
       detect_whether_ui_load_finished();
     })
 }
+
+function importHighlightCSSFile(uri) {
+  axios
+    .get(uri)
+    .then(function (response) {
+      document.getElementById("highlight_css").innerHTML += response.data;
+      highlight_css_import_finished = true;
+      detect_whether_ui_load_finished();
+    })
+}
+
 axios
   .get("./data/index.json?timestamp=" + Date.parse(new Date()))
   .then(function (response) {
@@ -1006,6 +1042,7 @@ axios
     // js importing disabled due to execution order is inevitable, while css importing can safely operate.
 
     importBootstrapCSSFile(cdn_path + "/bootstrap@5.0.2/dist/css/bootstrap.min.css");
+    importHighlightCSSFile(cdn_path + "/highlight.js@9.12.0/styles/tomorrow.css");
 
     lang_name = blog["网站语言"];
     articleListPageLength = Math.ceil(blog["文章列表"].length / blog["文章列表中每页的文章数为"]); // 从1开始数
