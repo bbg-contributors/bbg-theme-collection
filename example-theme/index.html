@@ -15,7 +15,7 @@
 
   </style>
   <style id="body_opacity">
-    body:before{
+    body:before {
       top: 0;
       left: 0;
       right: 0;
@@ -43,7 +43,7 @@
       border-radius: 12px;
     }
 
-    .articlebottomnav{
+    .articlebottomnav {
       background-color: white;
       box-shadow: 0 1px 1px -2px rgb(0 0 0 / 20%),
         0 2px 2px 0 rgb(0 0 0 / 36%), 0 1px 5px 0 rgb(0 0 0 / 32%);
@@ -87,9 +87,9 @@
 
     }
 
-    @media (max-width: 520px){
-      #article-bottom-bar{
-        display:none;
+    @media (max-width: 520px) {
+      #article-bottom-bar {
+        display: none;
       }
     }
 
@@ -482,7 +482,7 @@
       }
     }
   </style>
-  
+
   <style>
     blockquote {
       color: #666666;
@@ -512,7 +512,7 @@
       padding-right: 12px;
       color: #0550ae;
       display: inline-block;
-      word-break: break-all!important;
+      word-break: break-all !important;
       white-space: pre-wrap;
     }
 
@@ -533,15 +533,17 @@
   <style id="whether_nightmode">
 
   </style>
-    <style id="highlight_css">
+  <style id="highlight_css">
 
-    </style>
+  </style>
   <style id="custom_css"></style>
   <div id="loading" style="font-family: sans-serif">
     <br /><br /><br />
-    <center><h2>Loading...</h2></center>
+    <center>
+      <h2>Loading...</h2>
+    </center>
   </div>
-  
+
   <div id="top"></div>
   <div id="root" style="display:none;"></div>
   <div id="back_to_top_btn">
@@ -559,11 +561,17 @@
   <script src="https://unpkg.com/@highlightjs/cdn-assets@11.5.1/highlight.min.js"></script>
   <script>
 
-marked.setOptions({
-  highlight: function(code) {
-    return hljs.highlightAuto(code).value;
-  }
-});
+    marked.setOptions({
+      highlight: function (code) {
+        return hljs.highlightAuto(code).value;
+      }
+    });
+
+    window.onpopstate = function () {
+      if (window.location.href.indexOf("#top") === -1) {
+        window.location.reload();
+      }
+    }
 
 
     currentArticleListPageOrder = 1; //这个变量表示目前在显示文章列表中的第几页，是从1开始数的
@@ -595,12 +603,12 @@ marked.setOptions({
           a{
             color:#67a5ff
           }
-          .card{
+          .card, #tag-content{
             background-color:black;
             color:white
           }
 
-          ul,ol,li,h1,h2 ,h3,h4,h5,h6{
+          ul,ol,li,h1,h2 ,h3,h4,h5,h6,.vcontent *, #veditor{
             color:white
           }
 
@@ -615,6 +623,11 @@ marked.setOptions({
       padding-left: 12px;
       padding-right: 12px;
       display: inline-block;
+    }
+
+    .bbg-comment-area{
+      background-color:black;
+      color:white
     }
           `;
       localStorage.setItem("is_nightmode", "on");
@@ -633,16 +646,16 @@ marked.setOptions({
       }
     }
 
-    function detect_whether_ui_load_finished(){
-      if(highlight_css_import_finished === true && bootstrap_css_import_finished === true && content_load_finished === true){
-        document.getElementById("root").setAttribute("style","");
-        document.getElementById("loading").setAttribute("style","display:none");
+    function detect_whether_ui_load_finished() {
+      if (highlight_css_import_finished === true && bootstrap_css_import_finished === true && content_load_finished === true) {
+        document.getElementById("root").setAttribute("style", "");
+        document.getElementById("loading").setAttribute("style", "display:none");
       }
     }
 
-    function copy_full_article_to_clipboard(){    
+    function copy_full_article_to_clipboard() {
       navigator.clipboard.writeText(document.querySelector("#article-content-html").innerText);
-      document.getElementById("copy_to_clipboard_button").innerHTML=`<i class="fa fa-check"></i> 已复制！`;
+      document.getElementById("copy_to_clipboard_button").innerHTML = `<i class="fa fa-check"></i> 已复制！`;
     }
 
     bootstrap_css_import_finished = false;
@@ -691,17 +704,17 @@ marked.setOptions({
       //todo: fix router
       let nav_base = `<nav class="navbar fixed-top navbar-expand-lg navbar-light bg-light" id="navbar">
   <div class="container-fluid">
-    <a class="navbar-brand" id="navbar_title" href="./index.html">${blog["博客标题"]}</a>
+    <a class="navbar-brand" id="navbar_title" href="./index.html" onclick="enter_indexPage();return false;">${blog["博客标题"]}</a>
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0" id="navbar_items">
         <li class="nav-item" id="navbar_article_list">
-          <a class="nav-link" href="./index.html?type=internal&function=article_list">${langdata["ARTICLE_LIST"][lang_name]}</a>
+          <a class="nav-link" href="./index.html?type=internal&function=article_list" onclick="enter_indexPage();return false;">${langdata["ARTICLE_LIST"][lang_name]}</a>
         </li>
         <li class="nav-item" id="navbar_archive_and_tags">
-          <a class="nav-link" href="./index.html?type=internal&function=archive_and_tags">${langdata["ARCHIVE_AND_TAGS"][lang_name]}</a>
+          <a class="nav-link" href="./index.html?type=internal&function=archive_and_tags" onclick="enter_archive_and_tags();return false;">${langdata["ARCHIVE_AND_TAGS"][lang_name]}</a>
         </li>
       </ul>
     </div>
@@ -726,7 +739,7 @@ marked.setOptions({
           if (blog["页面列表"][i]["是否显示在菜单中"]) {
             document.querySelector("#navbar_items").innerHTML += `
                         <li class="nav-item" id="navbar_page_${i}">
-                            <a class="nav-link" href="./index.html?type=page&filename=${blog["页面列表"][i]["文件名"]}">${blog["页面列表"][i]["若显示在菜单中，则在菜单中显示为"]}</a>
+                            <a class="nav-link" href="./index.html?type=page&filename=${blog["页面列表"][i]["文件名"]}" onclick="enter_page(${i});return false;">${blog["页面列表"][i]["若显示在菜单中，则在菜单中显示为"]}</a>
                         </li>
                         `;
           }
@@ -736,7 +749,7 @@ marked.setOptions({
       if (blog["启用内建友人帐页面"] === true) {
         document.querySelector("#navbar_items").innerHTML += `
                         <li class="nav-item" id="navbar_friendbook">
-                            <a class="nav-link" href="./index.html?type=internal&function=friendbook">友人帐</a>
+                            <a class="nav-link" href="./index.html?type=internal&function=friendbook" onclick="enter_friend_book();return false;">友人帐</a>
                         </li>
             `;
 
@@ -820,7 +833,7 @@ marked.setOptions({
           document.querySelector("#container").innerHTML += `
                     <div class="article-item" id="article-item-${i}">
                         <div class="article-item-sub"><i class="fa fa-thumb-tack"></i> 置顶文章</div>
-                        <h2><a href="./index.html?type=article&filename=${blog["文章列表"][i]["文件名"]}">${blog["文章列表"][i]["文章标题"]}</a></h2>
+                        <h2><a href="./index.html?type=article&filename=${blog["文章列表"][i]["文件名"]}" onclick="enter_article(${i});return false;">${blog["文章列表"][i]["文章标题"]}</a></h2>
                        
                         
                     </div>
@@ -841,7 +854,7 @@ marked.setOptions({
         } else {
           document.querySelector("#container").innerHTML += `
                     <div class="article-item" id="article-item-${i}">
-                        <h2><a href="./index.html?type=article&filename=${blog["文章列表"][i]["文件名"]}">${blog["文章列表"][i]["文章标题"]}</a></h2>
+                        <h2><a href="./index.html?type=article&filename=${blog["文章列表"][i]["文件名"]}" onclick="enter_article(${i});return false;">${blog["文章列表"][i]["文章标题"]}</a></h2>
                        
                         
                     </div>
@@ -863,7 +876,7 @@ marked.setOptions({
 
             for (let k = 0; k < blog["文章列表"][i]["标签"].length; k++) {
               document.querySelector("#article-item-sub-" + i).innerHTML += `
-                                <a class="btn btn-light btn-sm" href="./index.html?type=internal&function=tag&argument=${blog["文章列表"][i]["标签"][k]}">${blog["文章列表"][i]["标签"][k]}</a>
+                                <a class="btn btn-light btn-sm" href="./index.html?type=internal&function=tag&argument=${blog["文章列表"][i]["标签"][k]}" onclick="enter_tag('${blog["文章列表"][i]["标签"][k]}');return false;">${blog["文章列表"][i]["标签"][k]}</a>
                                 `;
             }
           }
@@ -937,7 +950,7 @@ marked.setOptions({
         ) {
           //todo:fix router 2
           document.querySelector("#article-content-sub").innerHTML += `
-            <a class="btn btn-light btn-sm" href="./index.html?type=internal&function=tag&argument=${blog["文章列表"][article_id]["标签"][k]}">${blog["文章列表"][article_id]["标签"][k]}</a>
+            <a class="btn btn-light btn-sm" href="./index.html?type=internal&function=tag&argument=${blog["文章列表"][article_id]["标签"][k]}" onclick="enter_tag('${blog["文章列表"][article_id]["标签"][k]}');return false;">${blog["文章列表"][article_id]["标签"][k]}</a>
             `;
         }
       }
@@ -954,28 +967,28 @@ marked.setOptions({
           Date.parse(new Date())
         )
         .then(function (response) {
-          document.querySelector("#article-content").innerHTML +=`
+          document.querySelector("#article-content").innerHTML += `
             <div id="article-content-html">${marked.parse(response.data)}</div>`;
-          
-            if(blog["提供文章文件下载"] || blog["提供复制全文到剪贴板的选项"]){
-            document.getElementById("article-content").innerHTML+=`
+
+          if (blog["提供文章文件下载"] || blog["提供复制全文到剪贴板的选项"]) {
+            document.getElementById("article-content").innerHTML += `
             <br />
             <div style="float:right;font-size:18px" id="article-bottom-bar">
             
               </div><br />
             `
           }
-            
 
 
-            if(blog["提供文章文件下载"]){
-            document.getElementById("article-bottom-bar").innerHTML+=`
+
+          if (blog["提供文章文件下载"]) {
+            document.getElementById("article-bottom-bar").innerHTML += `
               <a class="btn btn-primary" href="./data/articles/${blog["文章列表"][article_id]["文件名"]}" download="${blog["文章列表"][article_id]["文章标题"]}.md"><i class="fa fa-download"></i> 将该文章下载到你的计算机上</a>
             `;
           }
 
-          if(blog["提供复制全文到剪贴板的选项"]){
-            document.getElementById("article-bottom-bar").innerHTML+=`
+          if (blog["提供复制全文到剪贴板的选项"]) {
+            document.getElementById("article-bottom-bar").innerHTML += `
               <a class="btn btn-primary" id="copy_to_clipboard_button" onclick="copy_full_article_to_clipboard();"><i class="fa fa-clipboard"></i> 复制全文到剪贴板</a>
             `;
           }
@@ -992,17 +1005,17 @@ marked.setOptions({
             `;
           }
 
-          if(blog["文章页面显示上一篇下一篇文章导航按钮"]){
+          if (blog["文章页面显示上一篇下一篇文章导航按钮"]) {
 
 
-            if(article_id === 0 && blog["文章列表"][article_id+1] != undefined && blog["文章列表"][article_id+1]["是否隐藏"] !== true){
+            if (article_id === 0 && blog["文章列表"][article_id + 1] != undefined && blog["文章列表"][article_id + 1]["是否隐藏"] !== true) {
               document.getElementById("container").innerHTML += `
               <div class="row">
     <div class="col">
       <div class="card articlebottomnav" style="float:left;width:100%">
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted"><i class="fa fa-arrow-left"></i> 上一篇文章</h6>
-    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id+1]["文件名"]}">${blog["文章列表"][article_id+1]["文章标题"]}</a></h5>
+    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id + 1]["文件名"]}" onclick="enter_article(${article_id + 1});return false;">${blog["文章列表"][article_id + 1]["文章标题"]}</a></h5>
   </div>
 </div>
     </div>
@@ -1019,7 +1032,7 @@ marked.setOptions({
             `
             }
 
-            if(article_id === 0 && blog["文章列表"][article_id+1] == undefined){
+            if (article_id === 0 && blog["文章列表"][article_id + 1] == undefined) {
               document.getElementById("container").innerHTML += `
             <div class="row">
     <div class="col">
@@ -1043,7 +1056,7 @@ marked.setOptions({
             `
             }
 
-            if(article_id !== 0 && blog["文章列表"][article_id+1] == undefined && blog["文章列表"][article_id-1]["是否隐藏"] !== true){
+            if (article_id !== 0 && blog["文章列表"][article_id + 1] == undefined && blog["文章列表"][article_id - 1]["是否隐藏"] !== true) {
               document.getElementById("container").innerHTML += `
               <div class="row">
     <div class="col">
@@ -1058,7 +1071,7 @@ marked.setOptions({
       <div class="card articlebottomnav" style="float:right;text-align:right;width:100%">
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted">下一篇文章 <i class="fa fa-arrow-right"></i></h6>
-    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id-1]["文件名"]}">${blog["文章列表"][article_id-1]["文章标题"]}</a></h5>
+    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id - 1]["文件名"]}" onclick="enter_article(${article_id - 1});return false;">${blog["文章列表"][article_id - 1]["文章标题"]}</a></h5>
   </div>
 </div>
     </div>
@@ -1067,14 +1080,14 @@ marked.setOptions({
             `
             }
 
-            if(article_id !== 0 && blog["文章列表"][article_id+1] != undefined && blog["文章列表"][article_id+1]["是否隐藏"] !== true && blog["文章列表"][article_id-1]["是否隐藏"] !== true){
+            if (article_id !== 0 && blog["文章列表"][article_id + 1] != undefined && blog["文章列表"][article_id + 1]["是否隐藏"] !== true && blog["文章列表"][article_id - 1]["是否隐藏"] !== true) {
               document.getElementById("container").innerHTML += `
               <div class="row">
     <div class="col">
       <div class="card articlebottomnav" style="float:left;width:100%">
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted"><i class="fa fa-arrow-left"></i> 上一篇文章</h6>
-    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id+1]["文件名"]}">${blog["文章列表"][article_id+1]["文章标题"]}</a></h5>
+    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id + 1]["文件名"]}" onclick="enter_article(${article_id + 1});return false;">${blog["文章列表"][article_id + 1]["文章标题"]}</a></h5>
   </div>
 </div>
     </div>
@@ -1082,7 +1095,7 @@ marked.setOptions({
       <div class="card articlebottomnav" style="float:right;text-align:right;width:100%">
   <div class="card-body">
     <h6 class="card-subtitle mb-2 text-muted">下一篇文章 <i class="fa fa-arrow-right"></i></h6>
-    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id-1]["文件名"]}">${blog["文章列表"][article_id-1]["文章标题"]}</a></h5>
+    <h5 class="card-title"><a href="./index.html?type=article&filename=${blog["文章列表"][article_id - 1]["文件名"]}" onclick="enter_article(${article_id - 1});return false;">${blog["文章列表"][article_id - 1]["文章标题"]}</a></h5>
   </div>
 </div>
     </div>
@@ -1090,10 +1103,10 @@ marked.setOptions({
      
             `
             }
-            
+
           }
 
-          
+
 
 
           if (
@@ -1270,7 +1283,7 @@ marked.setOptions({
             if (tagtree[Object.keys(tagtree)[i]][k] === blog["文章列表"][j]) {
               document.querySelector(
                 "#tag-content"
-              ).innerHTML += `<p><i class="fa fa-file-text-o"></i> <a href="./index.html?type=article&filename=${blog["文章列表"][j]["文件名"]}">${tagtree[Object.keys(tagtree)[i]][k]["文章标题"]
+              ).innerHTML += `<p><i class="fa fa-file-text-o"></i> <a href="./index.html?type=article&filename=${blog["文章列表"][j]["文件名"]}" onclick="enter_article(${j});return false;">${tagtree[Object.keys(tagtree)[i]][k]["文章标题"]
               }</a>（<i class="fa fa-calendar"></i> ${langdata["ARTICLE_CREATEDAT"][lang_name]}${tagtree[Object.keys(tagtree)[i]][k]["创建日期"]
                 }，<i class="fa fa-clock-o"></i> ${langdata["LASTMODIFIEDAT"][lang_name]}${tagtree[Object.keys(tagtree)[i]][k]["修改日期"]
                 }）</p>`;
@@ -1344,7 +1357,7 @@ marked.setOptions({
           if (tagtree[tagname][i] === blog["文章列表"][j]) {
             document.querySelector(
               "#tag-content"
-            ).innerHTML += `<p><i class="fa fa-file-text-o"></i> <a href="./index.html?type=article&filename=${blog["文章列表"][j]["文件名"]}">${tagtree[tagname][i]["文章标题"]}</a>（<i class="fa fa-calendar"></i> ${langdata["ARTICLE_CREATEDAT"][lang_name]}${tagtree[tagname][i]["创建日期"]}，<i class="fa fa-clock-o"></i> ${langdata["LASTMODIFIEDAT"][lang_name]}${tagtree[tagname][i]["修改日期"]}）</p>`;
+            ).innerHTML += `<p><i class="fa fa-file-text-o"></i> <a href="/index.html?type=article&filename=${blog["文章列表"][j]["文件名"]}" onclick="enter_article(${j});return false;">${tagtree[tagname][i]["文章标题"]}</a>（<i class="fa fa-calendar"></i> ${langdata["ARTICLE_CREATEDAT"][lang_name]}${tagtree[tagname][i]["创建日期"]}，<i class="fa fa-clock-o"></i> ${langdata["LASTMODIFIEDAT"][lang_name]}${tagtree[tagname][i]["修改日期"]}）</p>`;
           }
         }
       }
@@ -1424,6 +1437,7 @@ marked.setOptions({
     }
 
     function enter_page(page_id) {
+      history.pushState({ type: "page", filename: blog["页面列表"][page_id]["文件名"] }, "", `./index.html?type=page&filename=${blog["页面列表"][page_id]["文件名"]}`);
       if (blog["页面列表"][page_id]["是否在新标签页打开"]) {
         if (blog["页面列表"][page_id]["这是一个完整的html"]) {
           // 在新标签页打开，是完整的html
@@ -1484,6 +1498,7 @@ marked.setOptions({
     }
 
     function enter_tag(tagname) {
+      history.pushState({ type: "internal", function: "tag", argument: decodeURIComponent(tagname) }, "", `./index.html?type=internal&function=tag&argument=${tagname}`);
       document.getElementsByTagName("title")[0].innerHTML = `标签为 ${decodeURIComponent(tagname)} 下的文章 - ${blog["博客标题"]} `;
       resetPage();
       render_nav(false);
@@ -1498,6 +1513,7 @@ marked.setOptions({
     }
 
     function enter_friend_book() {
+      history.pushState({ type: "internal", function: "friendbook" }, "", `./index.html?type=internal&function=friendbook`);
       document.getElementsByTagName("title")[0].innerHTML = `友人帐 - ${blog["博客标题"]} `;
       resetPage();
       render_nav(false);
@@ -1511,6 +1527,7 @@ marked.setOptions({
     }
 
     function enter_archive_and_tags() {
+      history.pushState({ type: "internal", function: "archive_and_tags" }, "", `./index.html?type=internal&function=archive_and_tags`);
       document.getElementsByTagName("title")[0].innerHTML = `归档与标签 - ${blog["博客标题"]} `;
       resetPage();
       render_nav(false);
@@ -1525,6 +1542,7 @@ marked.setOptions({
     }
 
     function enter_indexPage() {
+      history.pushState({ type: "internal", function: "article_list" }, "", `./index.html?type=internal&function=article_list`);
       document.getElementsByTagName("title")[0].innerHTML = blog["博客标题"];
       resetPage();
       render_nav(true);
@@ -1541,6 +1559,7 @@ marked.setOptions({
     }
 
     function enter_article(article_id) {
+      history.pushState({ type: "article", filename: blog["文章列表"][article_id]["文件名"] }, "", `./index.html?type=article&filename=${blog["文章列表"][article_id]["文件名"]}`);
       document.getElementsByTagName("title")[0].innerHTML = `${blog["文章列表"][article_id]["文章标题"]} - ${blog["博客标题"]} `;
       resetPage();
       render_nav(false);
@@ -1562,23 +1581,23 @@ marked.setOptions({
 
     function importBootstrapCSSFile(uri) {
       axios
-      .get(uri)
-      .then(function (response) {
-        document.getElementById("bootstrap_css").innerHTML+=response.data;
-        bootstrap_css_import_finished = true;
-        detect_whether_ui_load_finished();
-      })
+        .get(uri)
+        .then(function (response) {
+          document.getElementById("bootstrap_css").innerHTML += response.data;
+          bootstrap_css_import_finished = true;
+          detect_whether_ui_load_finished();
+        })
     }
 
 
     function importHighlightCSSFile(uri) {
       axios
-      .get(uri)
-      .then(function (response) {
-        document.getElementById("highlight_css").innerHTML+=response.data;
-        highlight_css_import_finished = true;
-        detect_whether_ui_load_finished();
-      })
+        .get(uri)
+        .then(function (response) {
+          document.getElementById("highlight_css").innerHTML += response.data;
+          highlight_css_import_finished = true;
+          detect_whether_ui_load_finished();
+        })
     }
 
     axios
@@ -1701,7 +1720,7 @@ marked.setOptions({
           }
         }
 
-        
+
       });
 
 
